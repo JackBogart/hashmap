@@ -181,4 +181,17 @@ export default class Bucket {
 
     return outputStr;
   }
+
+  toStringKey() {
+    let currentNode = this.head;
+    let outputStr = '';
+
+    while (currentNode !== null) {
+      outputStr += `( ${currentNode.key} ) -> `;
+      currentNode = currentNode.next;
+    }
+    outputStr += 'null';
+
+    return outputStr;
+  }
 }
