@@ -2,9 +2,13 @@ import Bucket from './bucket.js';
 
 export default class HashMap {
   #buckets;
+  #loadFactor;
+  #length;
 
-  constructor() {
+  constructor(loadFactor = 0.75) {
     this.#buckets = Array.from({ length: 16 }, () => new Bucket());
+    this.#loadFactor = loadFactor;
+    this.#length = 0;
   }
 
   #validateBucketIndex(index) {
@@ -32,43 +36,60 @@ export default class HashMap {
     return hashCode;
   }
 
+  #increaseBuckets() {
+    const entries = this.entries();
+    this.#buckets = Array.from(
+      { length: this.#buckets.length * 2 },
+      () => new Bucket(),
+    );
+
+    entries.forEach(([key, value]) => {
+      const bucket = this.#getBucket(key);
+
+      bucket.append(key, value);
+    });
+  }
+
   set(key, value) {
     const bucket = this.#getBucket(key);
 
-    bucket.setOrUpdate(key, value);
+    if (bucket.setOrUpdate(key, value)) {
+      this.#length += 1;
+
+      if (this.#length > this.#buckets.length * this.#loadFactor) {
+        this.#increaseBuckets();
+      }
+    }
   }
 
   get(key) {
     const bucket = this.#getBucket(key);
-
     return bucket.find(key);
   }
 
   has(key) {
     const bucket = this.#getBucket(key);
-
     return bucket.contains(key);
   }
 
   remove(key) {
     const bucket = this.#getBucket(key);
+    const result = bucket.remove(key);
 
-    return bucket.remove(key);
+    if (result) {
+      this.#length -= 1;
+    }
+
+    return result;
   }
 
   length() {
-    return this.#buckets.reduce(
-      (accumulator, currentValue) => accumulator + currentValue.size,
-      0,
-    );
+    return this.#length;
   }
 
   clear() {
-    this.#buckets.forEach((bucket) => {
-      bucket.head = null;
-      bucket.tail = null;
-      bucket.size = 0;
-    });
+    this.#buckets = Array.from({ length: 16 }, () => new Bucket());
+    this.#length = 0;
   }
 
   keys() {

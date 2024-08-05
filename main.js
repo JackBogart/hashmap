@@ -1,59 +1,40 @@
 import HashMap from './hashmap.js';
 
-const testMap = new HashMap();
+const test = new HashMap();
 
-console.log(testMap.length());
+test.set('apple', 'red');
+test.set('banana', 'yellow');
+test.set('carrot', 'orange');
+test.set('dog', 'brown');
+test.set('elephant', 'gray');
+test.set('frog', 'green');
+test.set('grape', 'purple');
+test.set('hat', 'black');
+test.set('ice cream', 'white');
+test.set('jacket', 'blue');
+test.set('kite', 'pink');
+test.set('lion', 'golden');
 
-testMap.set('Carlos', 'Test');
-console.log(testMap.toString());
+console.log(test.toString(), '\n');
 
-testMap.set('Carlos', 'Update');
-console.log(testMap.toString());
+test.set('lion', 'cyan');
+console.log(test.toString(), '\n');
 
-console.log(testMap.length());
+test.set('moon', 'silver');
+console.log(test.toString(), '\n');
+test.set('moon', 'cheese');
+console.log(test.toString(), '\n');
 
-testMap.set('Carloc', 'Same hash');
-console.log(testMap.toString());
+console.log(test.get('dog'));
+console.log(test.has('dog'));
+console.log(test.remove('dog'));
 
-testMap.set('Carloc', 'Updated same hash');
-testMap.set('Carlds', 'Third ele');
+console.log(test.toString());
+console.log(test.length());
 
-console.log(testMap.toString());
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
 
-console.log(testMap.get('Carlo'));
-console.log(testMap.get('Carlos'));
-console.log(testMap.length());
-
-console.log(testMap.keys());
-console.log(testMap.values());
-
-testMap.remove('Carlos');
-console.log(testMap.length());
-testMap.remove('Carloc');
-console.log(testMap.toString());
-
-console.log(testMap.keys());
-console.log(testMap.values());
-
-console.log(testMap.get('Carlos'));
-
-console.log(testMap.length());
-
-testMap.set('Carlos', 'Update');
-console.log(testMap.toString());
-
-testMap.set('Carloc', 'Same hash');
-console.log(testMap.toString());
-console.log(testMap.length());
-
-console.log(testMap.keys());
-console.log(testMap.values());
-testMap.clear();
-console.log(testMap.toString());
-console.log(testMap.length());
-
-testMap.set('Carlos', 'Update');
-console.log(testMap.toString());
-
-console.log(testMap.keys());
-console.log(testMap.values());
+test.clear();
+console.log(test.toString());

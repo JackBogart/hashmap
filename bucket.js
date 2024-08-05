@@ -7,7 +7,7 @@ export default class Bucket {
     this.size = 0;
   }
 
-  #append(key, value) {
+  append(key, value) {
     const newNode = new Node(key, value);
 
     if (this.size === 0) {
@@ -29,10 +29,12 @@ export default class Bucket {
     }
 
     if (currentNode === null) {
-      this.#append(key, value);
-    } else {
-      currentNode.value = value;
+      this.append(key, value);
+      return true;
     }
+
+    currentNode.value = value;
+    return false;
   }
 
   contains(key) {
