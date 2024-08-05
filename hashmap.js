@@ -1,51 +1,95 @@
-import LinkedList from "./linkedList.js";
+import Bucket from './bucket.js';
 
-export default class HashMap{
+export default class HashMap {
   #buckets;
 
-  constructor(capacity=16){
-    this.#buckets = Array.from({length: capacity}, () => new LinkedList())
+  constructor() {
+    this.#buckets = Array.from({ length: 16 }, () => new Bucket());
   }
 
-  #validateBucketIndex(index){
-    if(index < 0 || index >= this.#buckets.length){
+  #validateBucketIndex(index) {
+    if (index < 0 || index >= this.#buckets.length) {
       throw new Error('Trying to access index out of bound');
     }
   }
 
-  #getBucket(hashCode) {
+  #getBucket(key) {
+    const hashCode = this.#hash(key);
+
     this.#validateBucketIndex(hashCode);
     return this.#buckets[hashCode];
   }
 
-  #hash(key){
+  #hash(key) {
     let hashCode = 0;
-    
     const primeNumber = 31;
-    for(let i = 0; i < key.length; i++){
-      hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.#buckets.length;
+
+    for (let i = 0; i < key.length; i++) {
+      hashCode =
+        (primeNumber * hashCode + key.charCodeAt(i)) % this.#buckets.length;
     }
-  
+
     return hashCode;
   }
 
-  set(key, value){
-    const hashCode = this.#hash(key);
-    const bucket = this.#getBucket(hashCode);
-    const node = bucket.get(key, 0);
+  set(key, value) {
+    const bucket = this.#getBucket(key);
 
-    if(node === null){
-      bucket.append([key, value]);
-    } else{
-      node.value = [key, value]
-    }
+    bucket.setOrUpdate(key, value);
   }
 
-  toString(){
-    for(const bucket of this.#buckets){
-      if(bucket !== null){
-        console.log(bucket.toString())
-      }
-    }
+  get(key) {
+    const bucket = this.#getBucket(key);
+
+    return bucket.find(key);
+  }
+
+  has(key) {
+    const bucket = this.#getBucket(key);
+
+    return bucket.contains(key);
+  }
+
+  remove(key) {
+    const bucket = this.#getBucket(key);
+
+    return bucket.remove(key);
+  }
+
+  length() {
+    return this.#buckets.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.size,
+      0,
+    );
+  }
+
+  clear() {
+    this.#buckets.forEach((bucket) => {
+      bucket.head = null;
+      bucket.tail = null;
+      bucket.size = 0;
+    });
+  }
+
+  keys() {
+    return this.#buckets.flatMap((bucket) => bucket.keys());
+  }
+
+  values() {
+    return this.#buckets.flatMap((bucket) => bucket.values());
+  }
+
+  entries() {
+    return this.#buckets.flatMap((bucket) => bucket.entries());
+  }
+
+  toString() {
+    let buckets = [];
+
+    this.#buckets.forEach((bucket) => {
+      buckets.push(`${bucket.toString()}`);
+    });
+
+    return buckets.join('\n');
   }
 }
